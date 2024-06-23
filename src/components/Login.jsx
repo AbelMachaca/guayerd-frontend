@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +9,8 @@ const Login = () => {
   });
 
   const { email, password } = formData;
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,6 +32,12 @@ const Login = () => {
         throw new Error(data.msg || 'Failed to login');
       }
 
+
+      login(data.token);
+      navigate('/dashboard');
+      // Almacenar el token JWT en el almacenamiento local
+      //localStorage.setItem('token', data.token);
+      
       console.log(data);
     } catch (err) {
       console.error(err.message);
