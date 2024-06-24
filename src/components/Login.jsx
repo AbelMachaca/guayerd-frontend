@@ -8,6 +8,9 @@ const Login = () => {
     password: ''
   });
 
+  const [message, setMessage] = useState('');
+
+
   const { email, password } = formData;
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -29,23 +32,33 @@ const Login = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.msg || 'Failed to login');
+        setMessage(data.msg || 'Failed to login');
+        return;
       }
-
+      console.log('Login response datasss:', data); // Log response data
 
       login(data.token);
-      navigate('/dashboard');
+      if (data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    
+
+      
       // Almacenar el token JWT en el almacenamiento local
       //localStorage.setItem('token', data.token);
       
       console.log(data);
     } catch (err) {
+        setMessage('Server error');
       console.error(err.message);
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
+        {message && <p>{message}</p>}
       <div>
         <label>Email</label>
         <input type="email" name="email" value={email} onChange={onChange} required />

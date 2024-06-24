@@ -2,7 +2,6 @@ import { useState, useContext  } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
-
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -10,6 +9,8 @@ const Register = () => {
     password: '',
     role: ''
   });
+
+  const [message, setMessage] = useState('');
 
   const { name, email, password, role } = formData;
   const { login } = useContext(AuthContext);
@@ -32,18 +33,31 @@ const Register = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.msg || 'Failed to register');
+        setMessage(data.msg || 'Failed to register');
+
+        console.log("hola",data);
+        console.log('Registration failed:', data.msg || 'Failed to register');
+        return;
       }
 
+      console.log('Registration successful, token:', data.token);
+      console.log('daattttaavbbvcbv:', data);
+
       login(data.token);
-      navigate('/dashboard');
+      if (data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
-      console.error(err.message);
+        setMessage('Server error');
+      console.error('Server error:', err.message);
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
+        {message && <p>{message}</p>}
       <div>
         <label>Name</label>
         <input type="text" name="name" value={name} onChange={onChange} required />

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -14,11 +14,13 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <p>Welcome, {auth.user?.name || 'User'}!</p>
+      <h1> asd Admin Dashboard</h1>
+      <p>Welcome, Admin!</p>
+
+      <p>Welcomhhhe, {auth.user?.name || 'User'}!</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;
