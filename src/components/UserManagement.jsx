@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import UserForm from './UserForm';
 
+import UserCreateForm from './UserCreateForm';
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+
+  const [creatingUser, setCreatingUser] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -57,6 +61,28 @@ const UserManagement = () => {
     }
   };
 
+  const handleCreate = async (id, formData) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        await fetchUsers(); // Recargar usuarios después de crear
+        setCreatingUser(false);
+      } else {
+        const data = await res.json();
+        console.error('Failed to create user:', data);
+      }
+    } catch (err) {
+      console.error('Failed to create user:', err);
+    }
+  };
+
   return (
     <div>
       <h2>User Management</h2>
@@ -66,7 +92,15 @@ const UserManagement = () => {
           onSave={handleEdit}
           onCancel={() => setEditingUser(null)}
         />
+      ) :  creatingUser ? (
+
+        <UserCreateForm
+          onSave={handleCreate}
+          onCancel={() => setCreatingUser(false)}
+        />
       ) : (
+        <>
+         <button onClick={() => setCreatingUser(true)}>Create New User</button>
         <table>
           <thead>
             <tr>
@@ -90,6 +124,7 @@ const UserManagement = () => {
             ))}
           </tbody>
         </table>
+        </>
       )}
     </div>
   );
