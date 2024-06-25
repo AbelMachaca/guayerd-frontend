@@ -15,6 +15,8 @@ const RoleRoute = ({ children, role }) => {
   if (auth.role !== role) {
     if (auth.role === 'admin') {
       return <Navigate to="/admin" />;
+    } else if (auth.role === 'mentor') {
+      return <Navigate to="/mentor" />;
     } else {
       return <Navigate to="/dashboard" />;
     }
